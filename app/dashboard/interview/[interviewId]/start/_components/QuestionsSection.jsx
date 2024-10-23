@@ -30,8 +30,16 @@ function QuestionsSection({mockInterviewQuestion, activeQuestionIndex}) {
             <h2 className='my-5 text-md md:text-lg'>{mockInterviewQuestion[activeQuestionIndex]?.question}</h2>
 
             <Volume2 className='cursor-pointer' onClick={()=>textToSpeech(mockInterviewQuestion[activeQuestionIndex]?.question)}/>
-
+            
             <div className='border rounded-lg p-5 bg-blue-100 mt-20'>
+                <h2 className='flex gap-2 items-center text-red-600'>
+                    <LightbulbIcon />
+                    <strong>Note:</strong>
+                </h2>
+                <h2 className='text-sm font-bold text-red-500 my-2'>{process.env.NEXT_PUBLIC_IMP_NOTE}</h2>
+            </div>
+
+            <div className='border rounded-lg p-5 bg-blue-100 mt-3'>
                 <h2 className='flex gap-2 items-center text-primary'>
                     <LightbulbIcon />
                     <strong>Note:</strong>
