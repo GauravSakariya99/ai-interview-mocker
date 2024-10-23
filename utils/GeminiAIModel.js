@@ -12,12 +12,13 @@ const model = genAI.getGenerativeModel({
 });
     
 const generationConfig = {
-    temperature: 1,
-    topP: 0.95,
-    topK: 64,
+    temperature: 0.8,
+    topP: 0.85,
+    topK: 250,
     maxOutputTokens: 8192,
-    responseMimeType: "text/plain",
+    responseMimeType: "text/plain"
 };
 
-const result = await chatSession.sendMessage("INSERT_INPUT_HERE");
-console.log(result.response.text());
+export const chatSession = model.startChat({
+    generationConfig
+});

@@ -5,23 +5,66 @@ import {
     DialogContent,
     DialogDescription,
     DialogHeader,
-    DialogTitle,
-    DialogClose
+    DialogTitle
     } from "@/components/ui/dialog"
 import { Button } from '@/components/ui/button';
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { chatSession } from '@/utils/GeminiAIModel';
+import { LoaderCircle } from 'lucide-react';
+import { db } from '@/utils/db';
+import { MockInterview } from '@/utils/schema';
+import { v4 as uuidv4 } from 'uuid';
+import { useUser } from '@clerk/nextjs';
+import moment from 'moment';
+import { useRouter } from 'next/navigation';
 
 function AddNewInterview() {
     const [openDialog, setOpenDialog] = useState(false);
     const [jobPosition, setJobPosition] = useState();
     const [jobDesc, setJobDesc] = useState();
     const [jobEx, setJobEx] = useState();
+    const [loading, setLoading] = useState();
+    const [josnResp, setJsonResp] = useState([]);
+    const router = useRouter();
 
-    const onSubmit=(e)=>{
+    const {user} = useUser();
+
+    const onSubmit=async(e)=>{
         e.preventDefault();
-        console.log(jobPosition, jobDesc, jobEx);
-        // setOpenDialog(false);
+        setLoading(true);
+        
+        const InputPrompt = "You are an Interviewer at Software Company Ask the Question according to Job Position: "+ jobPosition + ", Job Description: "+ jobDesc + "Years of Experience: " + jobEx + " Depends on Job Position, Job Description and Years of Experience Give us Only "+ process.env.NEXT_PUBLIC_INTERVIEW_QUESTION_COUNT +" Interview Questions along with Answers in JOSN Format, Give us question and answer field on JSON. Don't Give any other things Only question and answers. Ask the Question Based on Years of Experience and Skills Candidate have."
+
+        console.log(InputPrompt);
+        const result = await chatSession.sendMessage(InputPrompt);
+
+        const mockJsonResponse = (result.response.text()).replace('```json','').replace('```',"");
+
+        console.log(JSON.parse(mockJsonResponse));
+        setJsonResp(mockJsonResponse);
+
+        if(mockJsonResponse){
+            const resp = await db.insert(MockInterview)
+            .values({
+                mockId: uuidv4(),
+                jsonMockResponse: mockJsonResponse,
+                jobPosition: jobPosition,
+                jobDescription: jobDesc,
+                jobExperience: jobEx,
+                createdBy: user?.primaryEmailAddress?.emailAddress,
+                createdAt: moment().format('DD-MM-YYYY')
+            }).returning({mockId:MockInterview.mockId});
+
+            if(resp){
+                setOpenDialog(false);
+                router.push('/dashboard/interview/' + resp[0].mockId);
+            }
+        }else{
+            console.error("No JSON response received from AI");
+        }
+
+        setLoading(false);
     };
     return (
         <div>
@@ -57,7 +100,13 @@ function AddNewInterview() {
                             </div>
                             <div className='flex gap-5 justify-end'>
                                 <Button type="button" variant="ghost" onClick={()=>{setOpenDialog(false)}}>Cancel</Button>
-                                <Button type="submit">Start Interview</Button>
+                                <Button type="submit" disabled={loading}>
+                                    {loading?
+                                        <>
+                                        <LoaderCircle className='animate-spin'/>'Generating From AI'
+                                        </>:'Start Interview'
+                                    }
+                                </Button>
                             </div>
                         </form>
                 </DialogContent>
