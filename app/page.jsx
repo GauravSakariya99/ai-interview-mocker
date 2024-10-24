@@ -1,5 +1,5 @@
+//"use client"
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import { Mail } from "lucide-react"
 import Header from "./dashboard/_components/Header";
 
@@ -7,15 +7,6 @@ export default function Home() {
   return (
     <div>
       <Header />
-      <div className="relative">
-        <Image
-          src="/public/landing1.avif"
-          alt="AI Insights"
-          layout="fill"
-          objectFit="cover"
-          className="w-full h-screen"
-        />
-      </div>
       <div className="relative px-4 pt-6 pb-8 sm:px-6 lg:px-8 lg:max-w-7xl lg:mx-auto lg:grid lg:grid-cols-2">
         <div className="lg:col-start-2 lg:pl-8">
           <div className="max-w-md mx-auto lg:mx-0">
@@ -26,9 +17,15 @@ export default function Home() {
               Get ready for your upcoming interview with our AI-powered mock interview platform.
             </p>
             <div className="mt-8">
-              <Button>
-                <Mail /> Contact Us
-              </Button>
+              <a
+                href="https://mail.google.com/mail/?view=cm&fs=1&to=sakariya.gd@gmail.com&su=AI%20Interview%20Mocker%20-%20Contact%20Us&body=Hi%20Gaurav%2C%0A%0A%5BYOUR%20MESSAGE%5D"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button>
+                  <Mail /> Contact Us
+                </Button>
+              </a>
             </div>
           </div>
         </div>
