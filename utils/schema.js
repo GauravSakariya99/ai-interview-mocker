@@ -1,7 +1,7 @@
 import { serial, varchar, text, pgTable } from "drizzle-orm/pg-core";
 
 export const MockInterview = pgTable('mockInterview', {
-    id: serial('id'),
+    id: serial('id').primaryKey(),
     jsonMockResponse: text('jsonMockResponse').notNull(),
     jobPosition: varchar('jobPosition', { length: 255 }).notNull(), // Specify length if necessary
     jobDescription: varchar('jobDescription', { length: 1000 }).notNull(),

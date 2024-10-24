@@ -7,12 +7,15 @@ import QuestionsSection from './_components/QuestionsSection';
 import RecordAnswerSestion from './_components/RecordAnswerSestion';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 function StartInterview({params}) {
     
     const [interviewData, setInterviewData] = useState();
     const [mockInterviewQuestion,setMockInterviewQuestion] = useState();
     const [activeQuestionIndex, setActiveQuestionIndex] = useState(0);
+    
+    const router = useRouter();
 
     useEffect(()=>{
         GetInterviewDetails();
@@ -42,6 +45,9 @@ function StartInterview({params}) {
                     activeQuestionIndex = {activeQuestionIndex}
                     interviewData = {interviewData}
                 />
+            </div>
+            <div>
+                <Button className='mt-10 font-bold' onClick={()=>router.replace('/dashboard')}>Go Home</Button>
             </div>
             <div className='flex justify-end gap-6'>
                 {activeQuestionIndex>0 && 
